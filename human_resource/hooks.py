@@ -2,11 +2,11 @@ from . import __version__ as app_version
 
 app_name = "human_resource"
 app_title = "Human Resource"
-app_publisher = "HR"
-app_description = "Human resources app"
+app_publisher = "hr"
+app_description = "Human Resources"
 app_icon = "octicon octicon-file-directory"
 app_color = "grey"
-app_email = "hr@hr.co"
+app_email = "hr@hr"
 app_license = "MIT"
 
 # Includes in <head>

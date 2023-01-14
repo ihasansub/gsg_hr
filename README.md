@@ -1,6 +1,6 @@
 ## Human Resource
 
-Human resources app
+Human Resources
 
 #### License
 
