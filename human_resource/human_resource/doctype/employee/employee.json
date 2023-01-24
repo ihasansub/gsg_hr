@@ -14,10 +14,11 @@
   "image",
   "status",
   "employee_number",
+  "age",
   "date_of_birth",
   "date_of_joining",
-  "mobiile",
   "department",
+  "mobile",
   "employee_education"
  ],
  "fields": [
@@ -39,7 +40,8 @@
   {
    "fieldname": "ful_name",
    "fieldtype": "Data",
-   "label": "Full Name"
+   "label": "Full Name",
+   "read_only": 1
   },
   {
    "fieldname": "image",
@@ -68,11 +70,6 @@
    "label": "Date of Joining"
   },
   {
-   "fieldname": "mobiile",
-   "fieldtype": "Data",
-   "label": "Mobiile"
-  },
-  {
    "fieldname": "department",
    "fieldtype": "Link",
    "label": "Department",
@@ -83,12 +80,24 @@
    "fieldtype": "Table",
    "label": "Employee Education",
    "options": "Employee Education"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "Age",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "label": "Mobile",
+   "length": 10
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-14 16:47:25.636120",
+ "modified": "2023-01-25 00:04:53.688816",
  "modified_by": "Administrator",
  "module": "Human Resource",
  "name": "Employee",
