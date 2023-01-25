@@ -34,7 +34,8 @@ class LeaveApplication(Document):
 
 			if leave_allocated:
 				self.leave_balance_before_application = str(leave_allocated[0].total_leaves_allocated)
-
+			else:
+				frappe.throw(_("Out of allocated period"))
 	def check_balance_leave(self):
 		if self.total_leave_days and self.leave_balance_before_application:
 			if float(self.total_leave_days) > float(self.leave_balance_before_application):
@@ -79,4 +80,15 @@ class LeaveApplication(Document):
 		needed_days = int(applicable_after_days) - int(applicable_date)
 		if applicable_after_days > applicable_date:
 			frappe.throw(_("Not allowed before extra " + str(needed_days) + " day(s)"))
-			
+
+@frappe.whitelist()
+def get_total_leave(employee, leave_type, from_date, to_date):
+	if employee and from_date and to_date and leave_type:
+		leave_allocated = frappe.db.sql(""" select * from `tabLeave Allocation` 
+		where employee = %s and leave_type = %s and from_date <= %s and to_date >= %s """,
+		(employee, leave_type, from_date, to_date), as_dict=1)
+
+		if leave_allocated:
+			return str(leave_allocated[0].total_leaves_allocated)
+		else:
+			return 0
