@@ -11,6 +11,8 @@ class LeaveApplication(Document):
 		self.set_total_leave_days()
 		self.get_total_leave_allocated()
 		self.check_balance_leave()
+		self.check_continuous_leave()
+		self.check_applicable_after()
 
 	def on_submit(self):
 		self.update_leave_allocated()
@@ -21,7 +23,7 @@ class LeaveApplication(Document):
 	def set_total_leave_days(self):
 		if self.to_date and self.from_date:
 			total_leave_day = frappe.utils.date_diff(self.to_date, self.from_date)
-			if total_leave_day>=0:
+			if total_leave_day >= 0:
 				self.total_leave_days = total_leave_day + 1
 
 	def get_total_leave_allocated(self):
@@ -59,3 +61,22 @@ class LeaveApplication(Document):
 					where employee = %s and leave_type = %s and from_date <= %s and to_date >= %s """,
 					  (new_leaves_allocated, self.employee, self.leave_type, self.from_date, self.to_date), as_dict=1)
 		frappe.db.commit
+
+
+	def check_continuous_leave(self):
+		max_continuous_leave = frappe.db.sql(""" select max_continuous_days_allowed from `tabLeave Type` 
+					where name = %s """,	(self.leave_type), as_dict=1)
+		max_leave = max_continuous_leave[0].max_continuous_days_allowed
+		total_leave_days = float(frappe.utils.date_diff(self.to_date, self.from_date) + 1)
+		if float(max_leave) < total_leave_days:
+			frappe.throw(_("Exceed max continuous leaves"))
+
+	def check_applicable_after(self):
+		applicable_after_qry = frappe.db.sql(""" select applicable_after from `tabLeave Type` 
+							where name = %s """, (self.leave_type), as_dict=1)
+		applicable_after_days = applicable_after_qry[0].applicable_after
+		applicable_date = frappe.utils.date_diff(self.from_date, frappe.utils.today())
+		needed_days = int(applicable_after_days) - int(applicable_date)
+		if applicable_after_days > applicable_date:
+			frappe.throw(_("Not allowed before extra " + str(needed_days) + " day(s)"))
+			
