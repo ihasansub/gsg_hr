@@ -19,27 +19,34 @@
   "date_of_joining",
   "department",
   "mobile",
-  "employee_education"
+  "employee_education",
+  "link_user"
  ],
  "fields": [
   {
    "fieldname": "first_name",
    "fieldtype": "Data",
-   "label": "First Name"
+   "in_list_view": 1,
+   "label": "First Name",
+   "reqd": 1
   },
   {
    "fieldname": "middle_name",
    "fieldtype": "Data",
-   "label": "Middle Name"
+   "in_list_view": 1,
+   "label": "Middle Name",
+   "reqd": 1
   },
   {
    "fieldname": "last_name",
    "fieldtype": "Data",
-   "label": "Last Name"
+   "label": "Last Name",
+   "reqd": 1
   },
   {
    "fieldname": "ful_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Full Name",
    "read_only": 1
   },
@@ -62,7 +69,9 @@
   {
    "fieldname": "date_of_birth",
    "fieldtype": "Date",
-   "label": "Date of Birth"
+   "in_list_view": 1,
+   "label": "Date of Birth",
+   "reqd": 1
   },
   {
    "fieldname": "date_of_joining",
@@ -91,13 +100,20 @@
    "fieldname": "mobile",
    "fieldtype": "Data",
    "label": "Mobile",
-   "length": 10
+   "length": 10,
+   "reqd": 1
+  },
+  {
+   "fieldname": "link_user",
+   "fieldtype": "Link",
+   "label": "Link User",
+   "options": "User"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-25 00:04:53.688816",
+ "modified": "2023-02-04 13:53:33.198614",
  "modified_by": "Administrator",
  "module": "Human Resource",
  "name": "Employee",

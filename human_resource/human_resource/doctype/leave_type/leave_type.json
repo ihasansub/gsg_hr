@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "leave_type_name",
+ "autoname": "field:leave_type_name",
  "creation": "2023-01-21 15:34:06.353378",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -16,7 +16,8 @@
   {
    "fieldname": "leave_type_name",
    "fieldtype": "Data",
-   "label": "Leave Type Name"
+   "label": "Leave Type Name",
+   "unique": 1
   },
   {
    "fieldname": "max_continuous_days_allowed",
@@ -37,7 +38,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-01-25 09:40:46.833527",
+ "modified": "2023-01-28 16:41:31.964165",
  "modified_by": "Administrator",
  "module": "Human Resource",
  "name": "Leave Type",

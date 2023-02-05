@@ -38,12 +38,13 @@ class Employee(Document):
 				frappe.throw("Mobile number should starts with 059")
 		else:
 			frappe.throw("Please add mobile number")
-	def check_education(self):
-		self.count_employee_education = 0
-		for x in self.employee_education:
-			self.count_employee_education = self.count_employee_education + 1
 
-		if self.count_employee_education < 2:
+	def check_education(self):
+		count_employee_education = 0
+		for x in self.employee_education:
+			count_employee_education = count_employee_education + 1
+
+		if count_employee_education < 2:
 			frappe.throw("Employee Education should at lease be 2")
 
 	def check_status(self):

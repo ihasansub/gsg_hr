@@ -6,6 +6,7 @@ from frappe.model.document import Document
 import frappe.utils
 from frappe import _
 
+
 class LeaveApplication(Document):
 	def validate(self):
 		self.set_total_leave_days()
@@ -13,6 +14,7 @@ class LeaveApplication(Document):
 		self.check_balance_leave()
 		self.check_continuous_leave()
 		self.check_applicable_after()
+		self.check_leave_period()
 
 	def on_submit(self):
 		self.update_leave_allocated()
@@ -37,9 +39,15 @@ class LeaveApplication(Document):
 			else:
 				frappe.throw(_("Out of allocated period"))
 	def check_balance_leave(self):
-		if self.total_leave_days and self.leave_balance_before_application:
-			if float(self.total_leave_days) > float(self.leave_balance_before_application):
-				frappe.throw(_("Insufficient leave balance of ") + self.leave_type)
+		negative_leave = frappe.db.sql(""" select allow_negative_balance from `tabLeave Type` 
+							where name = %s """, (self.leave_type), as_dict=1)
+
+		if negative_leave[0].allow_negative_balance:
+			return
+		else:
+			if self.total_leave_days and self.leave_balance_before_application:
+				if float(self.total_leave_days) > float(self.leave_balance_before_application):
+					frappe.throw(_("Insufficient leave balance of ") + self.leave_type)
 
 	def update_leave_allocated(self):
 		new_leaves_allocated = float(self.leave_balance_before_application) - float(self.total_leave_days)
@@ -60,9 +68,8 @@ class LeaveApplication(Document):
 		new_leaves_allocated = float(current_leave_balance) + float(self.total_leave_days)
 		frappe.db.sql(""" update `tabLeave Allocation` set total_leaves_allocated = %s
 					where employee = %s and leave_type = %s and from_date <= %s and to_date >= %s """,
-					  (new_leaves_allocated, self.employee, self.leave_type, self.from_date, self.to_date), as_dict=1)
+					(new_leaves_allocated, self.employee, self.leave_type, self.from_date, self.to_date), as_dict=1)
 		frappe.db.commit
-
 
 	def check_continuous_leave(self):
 		max_continuous_leave = frappe.db.sql(""" select max_continuous_days_allowed from `tabLeave Type` 
@@ -80,6 +87,19 @@ class LeaveApplication(Document):
 		needed_days = int(applicable_after_days) - int(applicable_date)
 		if applicable_after_days > applicable_date:
 			frappe.throw(_("Not allowed before extra " + str(needed_days) + " day(s)"))
+
+	def check_leave_period(self):
+		if self.employee and self.from_date and self.to_date and self.leave_type:
+			leave_application = frappe.db.sql(""" select * from `tabLeave Application` 
+			where employee = %s and leave_type = %s and from_date <= %s and to_date >= %s """,
+											(self.employee, self.leave_type, self.from_date, self.to_date), as_dict=1)
+
+			if leave_application:
+				frappe.throw(_("Employee has leave application for selected period and leave type"))
+
+		else:
+			frappe.throw(_("please fill all data"))
+
 
 @frappe.whitelist()
 def get_total_leave(employee, leave_type, from_date, to_date):
